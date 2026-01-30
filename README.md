@@ -1,4 +1,4 @@
-````markdown
+
 # 🩺 FHIR Blood Pressure Monitoring — Kafka • Elasticsearch • Kibana (+ ML optionnel)
 
 Pipeline **temps réel** de surveillance de **pression artérielle** au format **FHIR (JSON)** : génération de données (patients/praticiens), ingestion Kafka, analyse & routage, stockage ciblé dans Elasticsearch, visualisation Kibana — avec une **brique Machine Learning optionnelle** pour compléter les règles à seuils.
