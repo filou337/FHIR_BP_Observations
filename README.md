@@ -245,5 +245,5 @@ docker compose -f Docker-compose.yml logs -f
 
 ```
 
-Le README ci-dessus est aligné sur vos scripts (topics, routage NORMAL→archives et anomalies→Elasticsearch, modèle ML optionnel) et votre infra Docker (Kafka/Zookeeper, Elasticsearch, Kibana, Kafka-UI, ports). :contentReference[oaicite:0]{index=0} :contentReference[oaicite:1]{index=1} :contentReference[oaicite:2]{index=2} :contentReference[oaicite:3]{index=3}
+Le README ci-dessus est aligné avec nos scripts du moment (topics, routage NORMAL→archives et anomalies→Elasticsearch, modèle ML optionnel) et votre infra Docker (Kafka/Zookeeper, Elasticsearch, Kibana, Kafka-UI, ports). Une MAJ sera bientot disponible 
 ```
