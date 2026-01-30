@@ -3,7 +3,7 @@ Ci-dessous, tu as **un README.md complet** (copie/colle tel quel) **inspiré du 
 > ✅ Je mets le README dans **un seul bloc Markdown**.
 > 🔎 À la fin (hors README), je te laisse les **sources** que j’ai utilisées pour les bonnes pratiques + docs officielles.
 
-````markdown
+`markdown
 # 🩺 Système de surveillance de la pression artérielle (FHIR) – Kafka, Elasticsearch & Kibana
 
 Ce dépôt présente un **système de streaming temps réel** qui génère des mesures de **pression artérielle** au format **FHIR Observation (JSON)**, les publie dans **Kafka**, détecte et catégorise les anomalies via un **consumer Python**, puis indexe les **cas anormaux** dans **Elasticsearch** pour une visualisation dans **Kibana**.
@@ -104,9 +104,9 @@ Ce dépôt présente un **système de streaming temps réel** qui génère des m
 
 > Le fichier s’appelle **`Docker-compose.yml`** (D majuscule).
 
-```bash
+bash
 docker compose -f Docker-compose.yml up -d
-````
+`
 
 ### 2) Accéder aux interfaces
 
@@ -119,7 +119,7 @@ docker compose -f Docker-compose.yml up -d
 
 ## 🐍 Setup Python (venv recommandé)
 
-```bash
+bash
 python -m venv .venv
 
 # Windows
@@ -127,14 +127,14 @@ python -m venv .venv
 
 # macOS/Linux
 source .venv/bin/activate
-```
+
 
 Installer les dépendances :
 
-```bash
+bash
 pip install -U pip
 pip install confluent-kafka elasticsearch faker numpy fhir.resources
-```
+
 
 ---
 
@@ -142,9 +142,9 @@ pip install confluent-kafka elasticsearch faker numpy fhir.resources
 
 ### 1) Lancer le consumer (d’abord)
 
-```bash
+bash
 python fhir_consumer.py
-```
+
 
 ✅ Le consumer :
 
@@ -156,9 +156,9 @@ python fhir_consumer.py
 
 ### 2) Lancer le producer
 
-```bash
+bash
 python fhir_producer.py
-```
+
 
 ✅ Le producer :
 
@@ -312,16 +312,16 @@ Objectif :
 
 ### Vérifier Elasticsearch
 
-```bash
+bash
 curl http://localhost:9200
 curl http://localhost:9200/_cat/indices?v
-```
+
 
 ### Vérifier Kibana
 
-```bash
+bash
 curl http://localhost:5601/api/status
-```
+
 
 ### Vérifier Kafka UI
 
@@ -355,15 +355,15 @@ curl http://localhost:5601/api/status
 1. Fork le repo
 2. Crée une branche :
 
-```bash
+bash
 git checkout -b feature/my-feature
-```
+
 
 3. Commit :
 
-```bash
+bash
 git commit -m "feat: add my feature"
-```
+
 
 4. Push + Pull Request
 
@@ -383,5 +383,17 @@ Philippe ROUMBO
 * GitHub : (à compléter)
 * LinkedIn : (à compléter)
 
-```
+
+
+---
+
+## Sources (pour les bonnes pratiques + docs officielles)
+- GitHub – à quoi sert un README et bonnes pratiques d’usage : :contentReference[oaicite:0]{index=0}  
+- Confluent Kafka Python client (Producer/Consumer/AdminClient) : :contentReference[oaicite:1]{index=1}  
+- Elasticsearch Python client – installation & docs : :contentReference[oaicite:2]{index=2}  
+- HL7 FHIR – exemple officiel Observation Blood Pressure : :contentReference[oaicite:3]{index=3}  
+- Références “README templates / inspiration” : :contentReference[oaicite:4]{index=4}  
+
+Si tu veux, je peux aussi te générer **un `requirements.txt` parfaitement aligné** avec tes scripts (sans dépendances inutiles) + un **Makefile** (start/stop/reset/logs) + une arborescence `docs/` prête à accueillir tes captures.
+::contentReference[oaicite:5]{index=5}
 
