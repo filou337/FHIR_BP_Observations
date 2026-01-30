@@ -13,7 +13,7 @@ Pipeline **temps réel** de surveillance de **pression artérielle** au format *
 - ✅ Routage :
   - **NORMAL** → archivage **local** (JSONL)
   - **ANORMAL** → indexation **Elasticsearch** + visualisation **Kibana**
-- ✅ 4 cas d’alerte “not normal” exposés dans Kibana (dashboard/table)
+- ✅ 4 cas d’alerte “not normal” exposés dans Kibana (dashboard/table) 
 - 🧠 **Option ML** : modèle supervisé entraîné sur les règles → prédiction temps réel + score/proba de risque
 
 ---
