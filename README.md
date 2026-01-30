@@ -18,6 +18,7 @@ Pipeline **temps réel** de surveillance de **pression artérielle** au format *
 
 ---
 
+````
 ## 🧱 Architecture
 
 text
@@ -35,8 +36,8 @@ archives/*.jsonl        Elasticsearch (index)
                                |
                                v
                             Kibana
-`
 
+```
 ---
 
 ## 📦 Stack
