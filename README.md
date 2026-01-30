@@ -1,9 +1,4 @@
-Ci-dessous, tu as **un README.md complet** (copie/colle tel quel) **inspiré du style** de ton exemple “arbres plantés…”, mais adapté à ton projet **FHIR Blood Pressure – Kafka → Elasticsearch → Kibana**.
 
-> ✅ Je mets le README dans **un seul bloc Markdown**.
-> 🔎 À la fin (hors README), je te laisse les **sources** que j’ai utilisées pour les bonnes pratiques + docs officielles.
-
-`markdown
 # 🩺 Système de surveillance de la pression artérielle (FHIR) – Kafka, Elasticsearch & Kibana
 
 Ce dépôt présente un **système de streaming temps réel** qui génère des mesures de **pression artérielle** au format **FHIR Observation (JSON)**, les publie dans **Kafka**, détecte et catégorise les anomalies via un **consumer Python**, puis indexe les **cas anormaux** dans **Elasticsearch** pour une visualisation dans **Kibana**.
@@ -387,13 +382,4 @@ Philippe ROUMBO
 
 ---
 
-## Sources (pour les bonnes pratiques + docs officielles)
-- GitHub – à quoi sert un README et bonnes pratiques d’usage : :contentReference[oaicite:0]{index=0}  
-- Confluent Kafka Python client (Producer/Consumer/AdminClient) : :contentReference[oaicite:1]{index=1}  
-- Elasticsearch Python client – installation & docs : :contentReference[oaicite:2]{index=2}  
-- HL7 FHIR – exemple officiel Observation Blood Pressure : :contentReference[oaicite:3]{index=3}  
-- Références “README templates / inspiration” : :contentReference[oaicite:4]{index=4}  
-
-Si tu veux, je peux aussi te générer **un `requirements.txt` parfaitement aligné** avec tes scripts (sans dépendances inutiles) + un **Makefile** (start/stop/reset/logs) + une arborescence `docs/` prête à accueillir tes captures.
-::contentReference[oaicite:5]{index=5}
 
