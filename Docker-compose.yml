@@ -1,0 +1,164 @@
+
+
+services:
+  # ============================================
+  # ZOOKEEPER - Coordinateur pour Kafka
+  # ============================================
+  # Zookeeper gère la coordination distribuée de Kafka :
+  # - Suivi des brokers Kafka actifs
+  # - Gestion des configurations des topics
+  # - Élection du leader pour les partitions
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0  # Image officielle Confluent
+    hostname: zookeeper
+    container_name: fhir-zookeeper
+    ports:
+      - "2181:2181"  # Port client standard de Zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181  # Port d'écoute pour les clients
+      ZOOKEEPER_TICK_TIME: 2000    # Unité de temps de base (ms) pour heartbeats
+    networks:
+      - fhir-network
+
+  # ============================================
+  # KAFKA - Broker de messages distribué
+  # ============================================
+  # Kafka permet le streaming de données en temps réel
+  # avec publication/abonnement à des topics
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    hostname: kafka
+    container_name: fhir-kafka
+    depends_on:
+      - zookeeper  # Kafka nécessite Zookeeper pour fonctionner
+    ports:
+      - "9092:9092"  # Port externe pour connexions depuis l'hôte
+      - "9101:9101"  # Port JMX pour monitoring
+    environment:
+      KAFKA_BROKER_ID: 1  # ID unique du broker (important en cluster)
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'  # Connexion à Zookeeper
+      
+      # Configuration des listeners (protocoles de sécurité)
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      
+      # Listeners publics :
+      # - kafka:29092 pour communication inter-conteneurs Docker
+      # - localhost:9092 pour accès depuis la machine hôte
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      
+      # Facteur de réplication (1 = pas de réplication, OK pour dev)
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1  # Min In-Sync Replicas pour transactions
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0  # Pas de délai au démarrage (dev)
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'    # Création automatique des topics
+      
+      # Configuration JMX pour monitoring avec outils externes
+      KAFKA_JMX_PORT: 9101
+      KAFKA_JMX_HOSTNAME: localhost
+    networks:
+      - fhir-network
+    healthcheck:
+      # Vérifie que Kafka répond correctement
+      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
+      interval: 10s   # Vérification toutes les 10s
+      timeout: 10s    # Timeout de la commande
+      retries: 5      # 5 tentatives avant de marquer comme unhealthy
+
+  # ============================================
+  # ELASTICSEARCH - Moteur de recherche et stockage
+  # ============================================
+  # Base de données NoSQL orientée recherche et analytique
+  # Stocke les données FHIR indexées pour requêtes rapides
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.1
+    container_name: fhir-elasticsearch
+    environment:
+      - node.name=es01  # Nom du nœud Elasticsearch
+      - cluster.name=fhir-cluster  # Nom du cluster
+      - discovery.type=single-node  # Mode nœud unique (pas de cluster)
+      - bootstrap.memory_lock=true  # Verrouille la RAM (évite swap, améliore perfs)
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"  # 512MB min/max de heap Java
+      - xpack.security.enabled=false  # Désactive la sécurité (dev uniquement)
+      - xpack.security.http.ssl.enabled=false  # Désactive HTTPS
+    ulimits:
+      memlock:
+        soft: -1  # Limite mémoire illimitée (pour bootstrap.memory_lock)
+        hard: -1
+    volumes:
+      - es-data:/usr/share/elasticsearch/data  # Persiste les données
+    ports:
+      - "9200:9200"  # API REST HTTP
+    networks:
+      - fhir-network
+    healthcheck:
+      # Vérifie la santé du cluster Elasticsearch
+      test: ["CMD-SHELL", "curl -s http://localhost:9200/_cluster/health >/dev/null || exit 1"]
+      interval: 30s      # Vérification toutes les 30s
+      timeout: 10s
+      retries: 10        # Plus de tentatives car démarrage lent
+      start_period: 60s  # Attend 60s avant première vérification
+
+  # ============================================
+  # KIBANA - Interface de visualisation
+  # ============================================
+  # Dashboard web pour visualiser et analyser les données Elasticsearch
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.1
+    container_name: fhir-kibana
+    depends_on:
+      elasticsearch:
+        condition: service_healthy  # Attend qu'Elasticsearch soit healthy
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200  # URL d'Elasticsearch
+      - SERVER_NAME=kibana
+      - SERVER_HOST=0.0.0.0  # Écoute sur toutes les interfaces
+    ports:
+      - "5601:5601"  # Interface web Kibana
+    networks:
+      - fhir-network
+    healthcheck:
+      # Vérifie que l'API Kibana répond
+      test: ["CMD-SHELL", "curl -s http://localhost:5601/api/status >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s  # Temps de démarrage initial
+
+  # ============================================
+  # KAFKA-UI - Interface graphique pour Kafka
+  # ============================================
+  # Dashboard web pour gérer et monitorer Kafka :
+  # - Visualiser les topics, messages, consumers
+  # - Créer/supprimer des topics
+  # - Publier des messages de test
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: fhir-kafka-ui
+    ports:
+      - "8080:8080"  # Interface web
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local  # Nom du cluster dans l'UI
+      # Utilise le port interne Docker (29092) pour communication
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
+      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181  # Connexion Zookeeper
+    depends_on:
+      - kafka      # Nécessite Kafka
+      - zookeeper  # Et Zookeeper
+    networks:
+      - fhir-network
+
+# ============================================
+# RÉSEAUX - Isolation et communication
+# ============================================
+networks:
+  fhir-network:
+    driver: bridge  # Réseau bridge : isole les conteneurs avec communication interne
+
+# ============================================
+# VOLUMES - Persistance des données
+# ============================================
+volumes:
+  es-data:
+    driver: local  # Volume local pour persister les données Elasticsearch
