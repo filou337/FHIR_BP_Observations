@@ -1,4 +1,4 @@
-````markdown
+
 # 🩺 Système de surveillance FHIR — Pression artérielle (Kafka • Elasticsearch • Kibana)
 
 Projet de streaming **temps réel** autour d’observations de **pression artérielle** au format **FHIR (JSON)**.
