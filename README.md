@@ -37,7 +37,7 @@ archives/*.jsonl        Elasticsearch (index)
                                v
                             Kibana
 
-```
+````
 ---
 
 ## 📦 Stack
