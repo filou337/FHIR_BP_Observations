@@ -1,4 +1,4 @@
-`markdown
+````markdown
 # 🩺 FHIR Blood Pressure Monitoring — Kafka • Elasticsearch • Kibana (+ ML optionnel)
 
 Pipeline **temps réel** de surveillance de **pression artérielle** au format **FHIR (JSON)** : génération de données (patients/praticiens), ingestion Kafka, analyse & routage, stockage ciblé dans Elasticsearch, visualisation Kibana — avec une **brique Machine Learning optionnelle** pour compléter les règles à seuils.
@@ -13,15 +13,14 @@ Pipeline **temps réel** de surveillance de **pression artérielle** au format *
 - ✅ Routage :
   - **NORMAL** → archivage **local** (JSONL)
   - **ANORMAL** → indexation **Elasticsearch** + visualisation **Kibana**
-- ✅ 4 cas d’alerte “not normal” exposés dans Kibana (dashboard/table) 
+- ✅ 4 cas d’alerte “not normal” exposés dans Kibana (dashboard/table)
 - 🧠 **Option ML** : modèle supervisé entraîné sur les règles → prédiction temps réel + score/proba de risque
 
 ---
 
-````
 ## 🧱 Architecture
 
-text
+```text
 [ fhir_data_generator.py ]  -> génère Observation FHIR (JSON)
           |
           v
@@ -36,8 +35,8 @@ archives/*.jsonl        Elasticsearch (index)
                                |
                                v
                             Kibana
-
 ````
+
 ---
 
 ## 📦 Stack
@@ -52,7 +51,7 @@ archives/*.jsonl        Elasticsearch (index)
 
 ## 📁 Structure du repo
 
-text
+```text
 .
 ├── Docker-compose.yml
 ├── Requierement.txt
@@ -63,7 +62,7 @@ text
 ├── ml_feature_extraction.py
 ├── ml_training.py
 └── archives/
-
+```
 
 ---
 
@@ -128,19 +127,19 @@ Génération :
 
 ### 1) Lancer l’infrastructure (Kafka + Elasticsearch + Kibana)
 
-bash
+```bash
 docker compose -f Docker-compose.yml up -d
-
+```
 
 Vérifier l’état :
 
-bash
+```bash
 docker compose -f Docker-compose.yml ps
-
+```
 
 ### 2) Installer les dépendances Python
 
-bash
+```bash
 python -m venv .venv
 
 # Windows
@@ -150,21 +149,21 @@ python -m venv .venv
 source .venv/bin/activate
 
 pip install -r Requierement.txt
-
+```
 
 ### 3) Démarrer le pipeline temps réel
 
 **Terminal A — Consumer (analyse + routage)**
 
-bash
+```bash
 python fhir_consumer.py
-
+```
 
 **Terminal B — Producer (génération + push Kafka)**
 
-bash
+```bash
 python fhir_producer.py
-
+```
 
 ---
 
@@ -198,9 +197,9 @@ Principe :
 
 ### Lancer l’entraînement (exemple)
 
-bash
+```bash
 python ml_training.py
-
+```
 
 ---
 
@@ -217,9 +216,9 @@ python ml_training.py
 
 ### Voir les logs Docker
 
-bash
+```bash
 docker compose -f Docker-compose.yml logs -f
-
+```
 
 ### Vérifier ports libres
 
@@ -239,5 +238,4 @@ Attendre que Elasticsearch soit “healthy” (souvent 1–2 minutes après `up 
 * **Philippe ROUMBO**
 * **Salma ELABSODI**
 
-
-
+```
