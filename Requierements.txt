@@ -1,0 +1,35 @@
+# =========================
+# Runtime (scripts Python)
+# =========================
+numpy>=1.26,<3
+Faker>=25,<30
+
+# =========================
+# Kafka (Producer/Consumer)
+# =========================
+confluent-kafka>=2.5,<3
+
+# =========================
+# Elasticsearch (cluster Docker: 8.11.1)
+# - Le client Python est "forward compatible" sur les mineures 8.x
+# =========================
+elasticsearch>=8.11,<9
+
+# =========================
+# Redis (persistance états de crise)
+# =========================
+redis>=5,<6
+
+# =========================
+# FHIR models (importés dans fhir_producer_fr.py)
+# ⚠️ Note: fhir.resources 7.x = défaut R5 (R4B dispo en sous-package)
+# =========================
+fhir.resources>=7,<8
+pydantic>=2.7,<3
+
+# =========================
+# OPTIONAL (si tu ajoutes une config .env / yaml + métriques)
+# =========================
+# python-dotenv>=1.0,<2
+# PyYAML>=6.0,<7
+# prometheus-client>=0.20,<1
