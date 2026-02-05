@@ -209,6 +209,7 @@ python ml_training.py
 * Série temporelle : évolution systolic/diastolic
 * Filtres : catégorie, niveau, patient, praticien
 * Compteurs : volumes NORMAL vs ANORMAL
+![Kibana_dashboard_FHIR_BP1](https://github.com/user-attachments/assets/e7101c99-52bb-47b7-affd-150fff517a49)
 
 ---
 
