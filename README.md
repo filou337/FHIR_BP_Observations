@@ -86,7 +86,7 @@ Génération :
 
 ---
 
-## 🧵 Topics Kafka (recommandation)
+## 🧵 Topics Kafka
 
 * **Entrée**
 
